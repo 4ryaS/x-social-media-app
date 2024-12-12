@@ -1,0 +1,13 @@
+x-client/node_modules/
+x-client/.next/
+x-client/package-lock.json
+x-client/public/static/
+x-client/*.tsbuildinfo
+x-client/next-env.d.ts
+x-client/.gitignore
+x-client/.env
+
+x-server/node_modules/
+x-server/build/
+x-server/package-lock.json
+x-server/.env

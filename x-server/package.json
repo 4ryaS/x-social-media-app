@@ -1,0 +1,25 @@
+{
+  "name": "x-server",
+  "version": "1.0.0",
+  "description": "x-server",
+  "main": "app.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "build": "tsc -p .",
+    "start": "npx nodemon build/app",
+    "dev": "tsc-watch --onSuccess \"npm start\""
+  },
+  "author": "4ryaS",
+  "license": "ISC",
+  "devDependencies": {
+    "prisma": "^6.0.1",
+    "tsc-watch": "^6.2.1",
+    "typescript": "^5.7.2"
+  },
+  "dependencies": {
+    "@apollo/server": "^4.11.2",
+    "@prisma/client": "^6.0.1",
+    "express": "^4.21.2",
+    "graphql": "^16.9.0"
+  }
+}
