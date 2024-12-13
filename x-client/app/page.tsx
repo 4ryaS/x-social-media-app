@@ -1,8 +1,10 @@
-import React from "react";
+'use client';
+import React, { useCallback } from "react";
 import { FaXTwitter } from "react-icons/fa6";
 import { BiHomeCircle, BiHash, BiBell, BiEnvelope, BiBookmark, BiUser } from "react-icons/bi";
 import { SlOptions } from "react-icons/sl";
 import { Inter } from "next/font/google";
+import { CredentialResponse, GoogleLogin } from "@react-oauth/google";
 import FeedCard from "@/components/FeedCard";
 
 const inter = Inter({ subsets: ["latin"] });
@@ -44,6 +46,8 @@ const SideBarMenuItems: XSideBarButton[] = [
 ];
 
 export default function Home() {
+
+  const handler_google_login = useCallback((credentials: CredentialResponse) => {}, []);
   return (
     <div className={inter.className}>
       <div className="grid grid-cols-12 h-screen w-screen px-56">
@@ -70,7 +74,12 @@ export default function Home() {
           <FeedCard></FeedCard>
           <FeedCard></FeedCard>
         </div>
-        <div className="col-span-3"></div>
+        <div className="col-span-3 p-5">
+          <div className="p-5 bg-slate-700 rounded-lg">
+            <h1 className="my-2 text-xl">New to X?</h1>
+            <GoogleLogin onSuccess={(credentials) => console.log(credentials)} />
+          </div>
+        </div>
       </div>
     </div>
   );
