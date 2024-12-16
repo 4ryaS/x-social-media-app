@@ -12,6 +12,8 @@
   "author": "4ryaS",
   "license": "ISC",
   "devDependencies": {
+    "@types/jsonwebtoken": "^9.0.7",
+    "dotenv": "^16.4.7",
     "prisma": "^6.0.1",
     "tsc-watch": "^6.2.1",
     "typescript": "^5.7.2"
@@ -19,7 +21,9 @@
   "dependencies": {
     "@apollo/server": "^4.11.2",
     "@prisma/client": "^6.0.1",
+    "axios": "^1.7.9",
     "express": "^4.21.2",
-    "graphql": "^16.9.0"
+    "graphql": "^16.9.0",
+    "jsonwebtoken": "^9.0.2"
   }
 }

@@ -6,6 +6,7 @@ x-client/*.tsbuildinfo
 x-client/next-env.d.ts
 x-client/.gitignore
 x-client/.env
+x-client/gql/
 
 x-server/node_modules/
 x-server/build/
