@@ -6,6 +6,9 @@ import { SlOptions } from "react-icons/sl";
 import { Inter } from "next/font/google";
 import { CredentialResponse, GoogleLogin } from "@react-oauth/google";
 import FeedCard from "@/components/FeedCard";
+import toast from "react-hot-toast";
+import { graphql_client } from "@/clients/api";
+import { verify_user_google_token } from "@/graphql/query/user";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -47,7 +50,22 @@ const SideBarMenuItems: XSideBarButton[] = [
 
 export default function Home() {
 
-  const handler_google_login = useCallback((credentials: CredentialResponse) => {}, []);
+  const handler_google_login = useCallback(async (credentials: CredentialResponse) => {
+    const google_token = credentials.credential;
+    if (!google_token) {
+      return toast.error(`Google Token Not Found`);
+    }
+    const { verify_google_token } = await graphql_client.request(verify_user_google_token, {token: google_token});
+
+    toast.success("Verified Successfully");
+    console.log(verify_google_token);
+
+    if (verify_google_token) {
+      window.localStorage.setItem('x_token', verify_google_token);
+    }
+
+
+  }, []);
   return (
     <div className={inter.className}>
       <div className="grid grid-cols-12 h-screen w-screen px-56">
@@ -77,7 +95,7 @@ export default function Home() {
         <div className="col-span-3 p-5">
           <div className="p-5 bg-slate-700 rounded-lg">
             <h1 className="my-2 text-xl">New to X?</h1>
-            <GoogleLogin onSuccess={(credentials) => console.log(credentials)} />
+            <GoogleLogin onSuccess={handler_google_login} />
           </div>
         </div>
       </div>
