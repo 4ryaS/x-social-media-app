@@ -1,9 +1,17 @@
 import { GraphQLClient } from "graphql-request";
 
-const is_client = typeof window !== "undefined";
+// Check if the code is running in a browser
+const isClient = typeof window !== "undefined";
 
-export const graphql_client = new GraphQLClient("http://127.0.0.1:8000/graphql", {
-    headers: () => ({
-        Authorization: is_client ? `Bearer ${window.localStorage.getItem("x_token")}` : "",
-    })
+// Create a GraphQL client with the authorization header conditionally based on environment
+export const graphql_client = new GraphQLClient("http://localhost:8000/graphql", {
+    headers: (): Record<string, string> => {
+        // If in the client (browser), get the token from localStorage
+        if (isClient) {
+            const token = window.localStorage.getItem("x_token");
+            return token ? { Authorization: `Bearer ${token}` } : {};
+        }
+        // If on the server, return an empty object or add your server-side logic for tokens
+        return {};
+    },
 });

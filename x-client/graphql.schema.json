@@ -36,6 +36,18 @@
         "isOneOf": null,
         "fields": [
           {
+            "name": "get_current_user",
+            "description": null,
+            "args": [],
+            "type": {
+              "kind": "OBJECT",
+              "name": "User",
+              "ofType": null
+            },
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
             "name": "verify_google_token",
             "description": null,
             "args": [
