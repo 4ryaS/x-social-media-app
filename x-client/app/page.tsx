@@ -11,6 +11,7 @@ import { graphql_client } from "@/clients/api";
 import { verify_user_google_token } from "@/graphql/query/user";
 import { useCurrentUser } from "@/hooks/user";
 import { useQueryClient } from "@tanstack/react-query"; 
+import Image from "next/image";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -81,7 +82,7 @@ export default function Home() {
   return (
     <div className={inter.className}>
       <div className="grid grid-cols-12 h-screen w-screen px-56">
-        <div className="col-span-3 pt-1">
+        <div className="col-span-3 pt-1 relative">
           <div className="text-2xl h-fit w-fit hover:bg-gray-800 rounded-full p-4 cursor-pointer transition-all">
             <FaXTwitter />
           </div>
@@ -98,6 +99,12 @@ export default function Home() {
               <button className="bg-[#1d9bf0] font-semibold text-lg rounded-full w-full py-2 px-4">Post</button>
             </div>
           </div>
+          {user && (<div className="absolute bottom-36 flex gap-2 items-center bg-slate-800 px-3 py-2 rounded-full">
+            {user && user.profile_img_url && <Image className="rounded-full" src={user?.profile_img_url} alt="user-image" height={50} width={50} />}
+            <div>
+              <h3>{user?.first_name} {user?.last_name}</h3>
+            </div>
+          </div>)}
         </div>
         <div className="col-span-5 border-r-[1px] border-l-[1px] border-gray-600">
           <FeedCard></FeedCard>
