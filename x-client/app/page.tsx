@@ -1,7 +1,7 @@
 'use client';
 import React, { useCallback } from "react";
 import { FaXTwitter } from "react-icons/fa6";
-import { BiHomeCircle, BiHash, BiBell, BiEnvelope, BiBookmark, BiUser } from "react-icons/bi";
+import { BiHomeCircle, BiHash, BiBell, BiEnvelope, BiBookmark, BiUser, BiImageAlt } from "react-icons/bi";
 import { SlOptions } from "react-icons/sl";
 import { Inter } from "next/font/google";
 import { CredentialResponse, GoogleLogin } from "@react-oauth/google";
@@ -54,10 +54,16 @@ const SideBarMenuItems: XSideBarButton[] = [
 export default function Home() {
 
   const { user } = useCurrentUser();
+  const query_client = useQueryClient();
   // console.log(user);
 
-  const query_client = useQueryClient();
-
+  const handle_select_image = useCallback(() => {
+    const input = document.createElement('input');
+    input.setAttribute('type', 'file');
+    input.setAttribute('accept', 'image/*');
+    input.click();
+  }, []);
+  
   const handler_google_login = useCallback(async (credentials: CredentialResponse) => {
     const google_token = credentials.credential;
     if (!google_token) {
@@ -107,6 +113,22 @@ export default function Home() {
           </div>)}
         </div>
         <div className="col-span-5 border-r-[1px] border-l-[1px] border-gray-600">
+          {user && (<div>
+            <div className="border border-r-0 border-l-0 border-b-0 border-gray-600 p-5 hover:bg-slate-900 transition-all cursor-pointer">
+              <div className="grid grid-cols-12 gap-3">
+                <div className="col-span-1">
+                {user?.profile_img_url && (<Image className="rounded-full" src={`${user?.profile_img_url}`} alt="User Image" height={50} width={50}/>)}
+                </div>
+                <div className="col-span-11">
+                  <textarea className="border w-full bg-transparent px-2 py-1 border-b border-slate-700" placeholder="What's new?" rows={3}></textarea>
+                  <div className="mt-2 flex justify-between items-center">
+                    <BiImageAlt onClick={handle_select_image} className="text-xl" />
+                    <button className="bg-[#1d9bf0] font-semibold text-sm rounded-full w py-1 px-4">Post</button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>)}
           <FeedCard></FeedCard>
           <FeedCard></FeedCard>
           <FeedCard></FeedCard>
