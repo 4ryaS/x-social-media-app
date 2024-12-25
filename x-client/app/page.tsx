@@ -1,5 +1,5 @@
 'use client';
-import React, { useCallback } from "react";
+import React, { useCallback, useState } from "react";
 import { FaXTwitter } from "react-icons/fa6";
 import { BiHomeCircle, BiHash, BiBell, BiEnvelope, BiBookmark, BiUser, BiImageAlt } from "react-icons/bi";
 import { SlOptions } from "react-icons/sl";
@@ -12,6 +12,8 @@ import { verify_user_google_token } from "@/graphql/query/user";
 import { useCurrentUser } from "@/hooks/user";
 import { useQueryClient } from "@tanstack/react-query"; 
 import Image from "next/image";
+import { useCreatePost, useGetAllPosts } from "@/hooks/post";
+import { Post } from "@/gql/graphql";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -54,8 +56,12 @@ const SideBarMenuItems: XSideBarButton[] = [
 export default function Home() {
 
   const { user } = useCurrentUser();
+  const { posts = [] } = useGetAllPosts();
+  const { mutate } = useCreatePost();
   const query_client = useQueryClient();
   // console.log(user);
+
+  const [content, set_content] = useState('');
 
   const handle_select_image = useCallback(() => {
     const input = document.createElement('input');
@@ -63,6 +69,12 @@ export default function Home() {
     input.setAttribute('accept', 'image/*');
     input.click();
   }, []);
+
+  const handle_create_post = useCallback(() => {
+    mutate({
+      content,
+    });
+  }, [content, mutate]);
   
   const handler_google_login = useCallback(async (credentials: CredentialResponse) => {
     const google_token = credentials.credential;
@@ -120,18 +132,24 @@ export default function Home() {
                 {user?.profile_img_url && (<Image className="rounded-full" src={`${user?.profile_img_url}`} alt="User Image" height={50} width={50}/>)}
                 </div>
                 <div className="col-span-11">
-                  <textarea className="border w-full bg-transparent px-2 py-1 border-b border-slate-700" placeholder="What's new?" rows={3}></textarea>
+                  <textarea 
+                    value={content}
+                    onChange={e => set_content(e.target.value)} 
+                    className="border w-full bg-transparent px-2 py-1 border-b border-slate-700" 
+                    placeholder="What's new?" 
+                    rows={3}>
+                  </textarea>
                   <div className="mt-2 flex justify-between items-center">
                     <BiImageAlt onClick={handle_select_image} className="text-xl" />
-                    <button className="bg-[#1d9bf0] font-semibold text-sm rounded-full w py-1 px-4">Post</button>
+                    <button onClick={handle_create_post} className="bg-[#1d9bf0] font-semibold text-sm rounded-full w py-1 px-4">Post</button>
                   </div>
                 </div>
               </div>
             </div>
           </div>)}
-          <FeedCard></FeedCard>
-          <FeedCard></FeedCard>
-          <FeedCard></FeedCard>
+          {
+            posts?.map(post => post ? <FeedCard key={post?.id} data={post as Post}/>: null)
+          }
         </div>
         <div className="col-span-3 p-5">
           {!user && (<div className="p-5 bg-slate-700 rounded-lg">

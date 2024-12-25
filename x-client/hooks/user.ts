@@ -1,9 +1,6 @@
 import { graphql_client } from "@/clients/api";
 import { get_current_user_query } from "@/graphql/query/user";
 import { useQuery } from "@tanstack/react-query";
-// import { GraphQLClient } from 'graphql-request';
-
-// const graphql_client = new GraphQLClient('http://localhost:8000/graphql');
 
 export const useCurrentUser = () => {
   const query = useQuery({
