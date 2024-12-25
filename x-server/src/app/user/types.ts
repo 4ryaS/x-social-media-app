@@ -6,5 +6,7 @@ export const types = `#graphql
         last_name: String!
         email: String!
         profile_img_url: String
+
+        posts: [Post]
     }
 `;
