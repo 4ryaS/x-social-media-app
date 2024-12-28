@@ -12,7 +12,7 @@ const UserProfilePage: NextPage = () => {
     // const { user } = useCurrentUser();
     
     const query = useParams();
-    console.log(query);
+    // console.log(query);
     const id: string = query?.id as string || ``;
 
     const { user } = useGetUserById(id);
@@ -35,7 +35,7 @@ const UserProfilePage: NextPage = () => {
                         <BsArrowLeftShort className="text-4xl"/>
                         <div>
                             <h1 className="text-xl font-bold">{user?.first_name || "User"} {user?.last_name || ""}</h1>
-                            <h1 className="text-md font-bold text-slate-500">5 Posts</h1>
+                            <h1 className="text-md font-bold text-slate-500">{user.posts?.length} Posts</h1>
                         </div>
                     </nav>
                     <div className="p-4 border-b border-slate-800">
@@ -51,12 +51,5 @@ const UserProfilePage: NextPage = () => {
     )
 };
 
-// export const getServerSideProps: GetServerSideProps = async(context) => {
-//     const id = context.query.id;
-//     console.log(id);
-//     return {
-//         props:{},
-//     };
-// }
 
 export default UserProfilePage;

@@ -2,6 +2,7 @@ import React from "react";
 import Image from "next/image";
 import { BiHeart, BiMessageRounded, BiRepost, BiUpload} from "react-icons/bi";
 import { Post } from "@/gql/graphql";
+import Link from "next/link";
 
 interface FeedCardProps {
     data: Post
@@ -16,7 +17,7 @@ const FeedCard: React.FC<FeedCardProps> = (props) => {
                     {data.author?.profile_img_url && (<Image className="rounded-full" src={data.author.profile_img_url} alt="User Image" height={50} width={50}/>)}
                 </div>
                 <div className="col-span-11">
-                    <h5>{data.author?.first_name} {data.author?.last_name}</h5>
+                    <Link href={`${data.author?.id}`}>{data.author?.first_name} {data.author?.last_name}</Link>
                     <p>
                         {data.content}
                     </p>

@@ -8,6 +8,7 @@ export const get_all_posts_query = graphql(`
             content
             image_url
             author {
+                id
                 first_name
                 last_name
                 profile_img_url
