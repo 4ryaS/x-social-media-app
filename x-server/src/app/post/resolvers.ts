@@ -1,7 +1,6 @@
 import { Post } from "@prisma/client";
 import { prisma_client } from "../../clients/db";
 import { GraphQLContext } from "../../interfaces";
-import { printSchema } from "graphql";
 
 interface CreatePostData {
     content: string

@@ -14,6 +14,35 @@ export const get_current_user_query = graphql(`#graphql
             email
             first_name
             last_name
+            posts {
+                id
+                content
+                author {
+                    first_name
+                    last_name
+                    profile_img_url
+                }
+            }
+        }
+    }
+`);
+
+export const get_user_by_id_query = graphql(`#graphql
+    query GetUserById($id: ID!) {
+        get_user_by_id(id: $id) {
+            id
+            first_name
+            last_name
+            profile_img_url
+            posts {
+                id
+                content
+                author {
+                    first_name
+                    last_name
+                    profile_img_url
+                }
+            }
         }
     }
 `);

@@ -1,5 +1,5 @@
 import { graphql_client } from "@/clients/api";
-import { get_current_user_query } from "@/graphql/query/user";
+import { get_current_user_query, get_user_by_id_query} from "@/graphql/query/user";
 import { useQuery } from "@tanstack/react-query";
 
 export const useCurrentUser = () => {
@@ -17,3 +17,11 @@ export const useCurrentUser = () => {
 
   return { ...query, user: query.data?.get_current_user };
 }
+
+export const useGetUserById = (id: string) => {
+  const query = useQuery({
+    queryKey: ["get-user-by-id"],
+    queryFn: async () => await graphql_client.request(get_user_by_id_query, { id }),
+  });
+  return { ...query, user: query.data?.get_user_by_id };
+};

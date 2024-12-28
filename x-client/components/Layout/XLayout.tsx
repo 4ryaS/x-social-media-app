@@ -1,5 +1,5 @@
 import { useCurrentUser } from "@/hooks/user";
-import React, { useCallback } from "react";
+import React, { useCallback, useMemo } from "react";
 import {
     BiBell,
     BiBookmark,
@@ -16,6 +16,7 @@ import toast from "react-hot-toast";
 import { graphql_client } from "@/clients/api";
 import { useQueryClient } from "@tanstack/react-query";
 import { verify_user_google_token } from "@/graphql/query/user";
+import Link from "next/link";
 
 interface XLayoutProps {
     children: React.ReactNode;
@@ -24,42 +25,52 @@ interface XLayoutProps {
 interface XSideBarButton {
     title: string;
     icon: React.ReactNode;
+    link: string;
 }
 
-const SideBarMenuItems: XSideBarButton[] = [
-    {
-        title: "Home",
-        icon: <BiHomeCircle />,
-    },
-    {
-        title: "Explore",
-        icon: <BiHash />,
-    },
-    {
-        title: "Notifications",
-        icon: <BiBell />,
-    },
-    {
-        title: "Messages",
-        icon: <BiEnvelope />,
-    },
-    {
-        title: "Bookmarks",
-        icon: <BiBookmark />,
-    },
-    {
-        title: "Profile",
-        icon: <BiUser />,
-    },
-    {
-        title: "More",
-        icon: <SlOptions />,
-    },
-];
+
 
 const XLayout: React.FC<XLayoutProps> = (props) => {
     const { user } = useCurrentUser();
     const query_client = useQueryClient();
+
+    const SideBarMenuItems: XSideBarButton[] = useMemo(() =>  [
+        {
+            title: "Home",
+            icon: <BiHomeCircle />,
+            link: '/',
+        },
+        {
+            title: "Explore",
+            icon: <BiHash />,
+            link: '/',
+        },
+        {
+            title: "Notifications",
+            icon: <BiBell />,
+            link: '/',
+        },
+        {
+            title: "Messages",
+            icon: <BiEnvelope />,
+            link: '/',
+        },
+        {
+            title: "Bookmarks",
+            icon: <BiBookmark />,
+            link: '/',
+        },
+        {
+            title: "Profile",
+            icon: <BiUser />,
+            link: `/${user?.id}`,
+        },
+        {
+            title: "More",
+            icon: <SlOptions />,
+            link: '/',
+        },
+    ], [user?.id]);
 
     const handler_google_login = useCallback(
         async (credentials: CredentialResponse) => {
@@ -101,11 +112,12 @@ const XLayout: React.FC<XLayoutProps> = (props) => {
                         <ul>
                             {SideBarMenuItems.map((item) => (
                                 <li
-                                    className="flex justify-start items-center gap-4 hover:bg-gray-800 rounded-full px-5 py-2 w-fit cursor-pointer"
                                     key={item.title}
                                 >
+                                    <Link className="flex justify-start items-center gap-4 hover:bg-gray-800 rounded-full px-5 py-2 w-fit cursor-pointer" href={item.link}>
                                     <span className="text-2xl">{item.icon}</span>
                                     <span className="hidden sm:inline">{item.title}</span>
+                                    </Link>
                                 </li>
                             ))}
                         </ul>
