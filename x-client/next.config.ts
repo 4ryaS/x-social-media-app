@@ -21,6 +21,12 @@ const nextConfig: NextConfig = {
         hostname: 'i0.wp.com',
         port: '',
         pathname: '/**',
+      },
+      {
+        protocol: 'https',
+        hostname: '4rya-x-dev.s3.ap-south-1.amazonaws.com',
+        port: '',
+        pathname: '/**',
       }
     ],
   },
