@@ -68,6 +68,8 @@ export default function Home() {
       content,
       image_url
     });
+    set_content('');
+    set_image_url('');
   }, [content, mutate, image_url]);
 
 

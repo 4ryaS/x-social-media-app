@@ -4,13 +4,10 @@ import { GraphQLContext } from "../../interfaces";
 import { S3Client, PutObjectCommand } from "@aws-sdk/client-s3";
 import { getSignedUrl } from "@aws-sdk/s3-request-presigner";
 import { config } from "dotenv";
+import UserService from "../../services/user";
+import PostService, { CreatePostData } from "../../services/post";
 
 config();
-
-interface CreatePostData {
-    content: string
-    image_url?: string
-};
 
 const s3_client = new S3Client({
     region: process.env.AWS_DEFAULT_REGION || "",
@@ -19,7 +16,7 @@ const s3_client = new S3Client({
 
 const queries = {
     get_all_posts: () => {
-        const posts = prisma_client.post.findMany({ orderBy: { created_at: "desc" } });
+        const posts = PostService.get_all_posts();
         return posts;
     },
     get_signed_url_for_post: async (parent: any, { image_name, image_type }: { image_name: string, image_type: string }, ctx: GraphQLContext) => {
@@ -51,13 +48,9 @@ const mutations = {
         if (!ctx.user) {
             throw new Error("You are not authenticated!");
         }
-        const post = await prisma_client.post.create({
-            data: {
-                content: payload.content,
-                image_url: payload.image_url,
-                author: { connect: { id: ctx.user.id } },
-
-            },
+        const post = await PostService.create_post({
+            ...payload,
+            user_id: ctx.user.id
         });
         return post;
     },
@@ -65,8 +58,8 @@ const mutations = {
 
 const author_resolvers = {
     Post: {
-        author: (parent: Post) => {
-            const author = prisma_client.user.findUnique({ where: { id: parent.author_id } });
+        author: async (parent: Post) => {
+            const author = await UserService.get_user_by_id(parent.author_id);
             return author;
         }
     }
