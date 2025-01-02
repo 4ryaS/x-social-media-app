@@ -14,24 +14,37 @@ datasource db {
 }
 
 model User {
-  id String @id @default(cuid())
-  first_name String
-  last_name String
-  email String @unique
+  id              String  @id @default(cuid())
+  first_name      String
+  last_name       String
+  email           String  @unique
   profile_img_url String? // optional
-  
+
   created_at DateTime @default(now())
   updated_at DateTime @updatedAt
+
+  followers Follows[] @relation("follower")
+  following Follows[] @relation("following")
 
   posts Post[]
 }
 
+model Follows {
+  follower    User   @relation("follower", fields: [follower_id], references: [id])
+  follower_id String
+
+  following    User   @relation("following", fields: [following_id], references: [id])
+  following_id String
+
+  @@id([follower_id, following_id])
+}
+
 model Post {
-  id String @id @default(cuid())
-  content String
+  id        String  @id @default(cuid())
+  content   String
   image_url String?
 
-  author User @relation(fields: [author_id], references: [id])
+  author    User   @relation(fields: [author_id], references: [id])
   author_id String
 
   created_at DateTime @default(now())

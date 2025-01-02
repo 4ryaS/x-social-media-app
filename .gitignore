@@ -12,3 +12,4 @@ x-server/node_modules/
 x-server/build/
 x-server/package-lock.json
 x-server/.env
+x-server/dbinfo

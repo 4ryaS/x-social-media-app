@@ -61,6 +61,21 @@ class UserService {
     public static get_user_by_id(id: string) {
         return prisma_client.user.findUnique({ where: { id } });
     };
+
+    public static follow_user(from: string, to: string) {
+        return prisma_client.follows.create({
+            data : {
+                follower: { connect: { id: from } },
+                following: { connect: { id: to } },
+            },
+        });
+    };
+
+    public static unfollow_user(from: string, to: string) {
+        return prisma_client.follows.delete({
+            where: { follower_id_following_id: { follower_id: from, following_id: to } },
+        });
+    };
 }
 
 export default UserService;
