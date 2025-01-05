@@ -34,7 +34,7 @@ const XLayout: React.FC<XLayoutProps> = (props) => {
     const { user } = useCurrentUser();
     const query_client = useQueryClient();
 
-    const SideBarMenuItems: XSideBarButton[] = useMemo(() =>  [
+    const SideBarMenuItems: XSideBarButton[] = useMemo(() => [
         {
             title: "Home",
             icon: <BiHomeCircle />,
@@ -105,31 +105,31 @@ const XLayout: React.FC<XLayoutProps> = (props) => {
             <div className="grid grid-cols-12 h-screen w-screen sm:px-56">
                 <div className="col-span-2 sm:col-span-3 pt-1 flex sm:justify-end pr-4 relative">
                     <div>
-                    <div className="text-2xl h-fit w-fit hover:bg-gray-800 rounded-full p-4 cursor-pointer transition-all">
-                        <FaXTwitter />
-                    </div>
-                    <div className="mt-4 text-xl pr-4">
-                        <ul>
-                            {SideBarMenuItems.map((item) => (
-                                <li
-                                    key={item.title}
-                                >
-                                    <Link className="flex justify-start items-center gap-4 hover:bg-gray-800 rounded-full px-5 py-2 w-fit cursor-pointer" href={item.link}>
-                                    <span className="text-2xl">{item.icon}</span>
-                                    <span className="hidden sm:inline">{item.title}</span>
-                                    </Link>
-                                </li>
-                            ))}
-                        </ul>
-                        <div className="mt-5 px-2">
-                            <button className="hidden sm:block bg-[#1d9bf0] font-semibold text-lg rounded-full w-full py-2 px-4">
-                                Post
-                            </button>
-                            <button className="block sm:hidden bg-[#1d9bf0] font-semibold text-lg rounded-full w-full py-2 px-4">
-                                <FaXTwitter/>
-                            </button>
+                        <div className="text-2xl h-fit w-fit hover:bg-gray-800 rounded-full p-4 cursor-pointer transition-all">
+                            <FaXTwitter />
                         </div>
-                    </div>
+                        <div className="mt-4 text-xl pr-4">
+                            <ul>
+                                {SideBarMenuItems.map((item) => (
+                                    <li
+                                        key={item.title}
+                                    >
+                                        <Link className="flex justify-start items-center gap-4 hover:bg-gray-800 rounded-full px-5 py-2 w-fit cursor-pointer" href={item.link}>
+                                            <span className="text-2xl">{item.icon}</span>
+                                            <span className="hidden sm:inline">{item.title}</span>
+                                        </Link>
+                                    </li>
+                                ))}
+                            </ul>
+                            <div className="mt-5 px-2">
+                                <button className="hidden sm:block bg-[#1d9bf0] font-semibold text-lg rounded-full w-full py-2 px-4">
+                                    Post
+                                </button>
+                                <button className="block sm:hidden bg-[#1d9bf0] font-semibold text-lg rounded-full w-full py-2 px-4">
+                                    <FaXTwitter />
+                                </button>
+                            </div>
+                        </div>
                     </div>
                     {user && (
                         <div className="left-11 absolute bottom-36 flex gap-2 items-center bg-slate-800 px-3 py-2 rounded-full">
@@ -154,12 +154,26 @@ const XLayout: React.FC<XLayoutProps> = (props) => {
                     {props.children}
                 </div>
                 <div className="col-span-0 sm:col-span-3 p-5">
-                    {!user && (
+                    {!user ? (
                         <div className="p-5 bg-slate-700 rounded-lg">
                             <h1 className="my-2 text-xl">New to X?</h1>
                             <GoogleLogin onSuccess={handler_google_login} />
                         </div>
-                    )}
+                    ) : <div className="p-3 bg-slate-800 rounded-lg">
+                        <h1 className="my-2 text-xl mb-5">Suggested Users</h1>
+                        {
+                            user?.recommend_users?.map((some_user) => (
+                                <div className="flex items-center gap-3 mt-2" key={some_user?.id}>
+                                    {some_user?.profile_img_url && <Image className="rounded-full" src={some_user?.profile_img_url} alt={"User"} width={60} height={60} />}
+                                    <div className="text-lg">
+                                        <div>{some_user?.first_name} {some_user?.last_name}</div>
+                                        <Link href={`/${some_user?.id}`} className="bg-white text-black text-sm px-4 py-1 rounded-md">View</Link>
+                                    </div>
+                                </div>
+                            ))
+                        }
+                    </div>}
+
                 </div>
             </div>
         </div>

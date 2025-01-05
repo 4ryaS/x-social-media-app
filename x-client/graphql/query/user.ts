@@ -14,6 +14,12 @@ export const get_current_user_query = graphql(`#graphql
             email
             first_name
             last_name
+            recommend_users {
+                first_name
+                last_name
+                profile_img_url
+                id
+            }
             followers {
                 first_name
                 last_name
