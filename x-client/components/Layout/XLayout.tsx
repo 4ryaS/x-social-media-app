@@ -63,7 +63,7 @@ const XLayout: React.FC<XLayoutProps> = (props) => {
         {
             title: "Profile",
             icon: <BiUser />,
-            link: `/${user?.id}`,
+            link: user?.id ? `/${user.id}` : "/",
         },
         {
             title: "More",
