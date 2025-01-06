@@ -28,6 +28,7 @@
     "cors": "^2.8.5",
     "express": "^4.21.2",
     "graphql": "^16.9.0",
+    "ioredis": "^5.4.2",
     "jsonwebtoken": "^9.0.2"
   }
 }

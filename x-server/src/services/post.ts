@@ -1,4 +1,5 @@
 import { prisma_client } from "../clients/db"
+import { redis_client } from "../clients/redis";
 
 export interface CreatePostData {
     content: string
@@ -7,18 +8,28 @@ export interface CreatePostData {
 };
 
 class PostService {
-    public static create_post(data: CreatePostData) {
-        return prisma_client.post.create({
+    public static async create_post(data: CreatePostData) {
+        // const rate_limit_flag = await redis_client.get(`RATE_LIMIT:POST:${data.user_id}`);
+        // if (rate_limit_flag) throw new Error("Please Wait...");
+        const post = prisma_client.post.create({
             data: {
                 content: data.content,
                 image_url: data.image_url,
                 author: { connect: { id: data.user_id } }
             }
         });
+        // await redis_client.setex(`RATE_LIMIT:POST:${data.user_id}`, 10, 1);
+        await redis_client.del(`ALL_POSTS`);
+        return post;
     }
 
-    public static get_all_posts() {
-        return prisma_client.post.findMany({ orderBy: { created_at: "desc" } });
+    public static async get_all_posts() {
+        const cached_posts = await redis_client.get(`ALL_POSTS`);
+        if (cached_posts) return JSON.parse(cached_posts);
+        
+        const posts =  prisma_client.post.findMany({ orderBy: { created_at: "desc" } });
+        await redis_client.set(`ALL_POSTS`, JSON.stringify(posts));
+        return posts;
     }
 }
 
