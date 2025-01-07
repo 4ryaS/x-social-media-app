@@ -27,7 +27,7 @@ class PostService {
         const cached_posts = await redis_client.get(`ALL_POSTS`);
         if (cached_posts) return JSON.parse(cached_posts);
         
-        const posts =  prisma_client.post.findMany({ orderBy: { created_at: "desc" } });
+        const posts = await prisma_client.post.findMany({ orderBy: { created_at: "desc" } });
         await redis_client.set(`ALL_POSTS`, JSON.stringify(posts));
         return posts;
     }

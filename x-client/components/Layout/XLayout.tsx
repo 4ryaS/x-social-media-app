@@ -128,27 +128,30 @@ const XLayout: React.FC<XLayoutProps> = (props) => {
                                 <button className="block sm:hidden bg-[#1d9bf0] font-semibold text-lg rounded-full w-full py-2 px-4">
                                     <FaXTwitter />
                                 </button>
+
                             </div>
+
                         </div>
+                        {user && (
+                            <div className="left-14 absolute mt-10 flex gap-2 items-center bg-slate-800 px-3 py-2 rounded-full">
+                                {user && user.profile_img_url && (
+                                    <Image
+                                        className="rounded-full"
+                                        src={user?.profile_img_url}
+                                        alt="user-image"
+                                        height={50}
+                                        width={50}
+                                    />
+                                )}
+                                <div className="hidden sm:block">
+                                    <h3>
+                                        {user?.first_name} {user?.last_name}
+                                    </h3>
+                                </div>
+                            </div>
+                        )}
                     </div>
-                    {user && (
-                        <div className="left-11 absolute bottom-36 flex gap-2 items-center bg-slate-800 px-3 py-2 rounded-full">
-                            {user && user.profile_img_url && (
-                                <Image
-                                    className="rounded-full"
-                                    src={user?.profile_img_url}
-                                    alt="user-image"
-                                    height={50}
-                                    width={50}
-                                />
-                            )}
-                            <div className="hidden sm:block">
-                                <h3>
-                                    {user?.first_name} {user?.last_name}
-                                </h3>
-                            </div>
-                        </div>
-                    )}
+
                 </div>
                 <div className="col-span-10 sm:col-span-5 border-r-[1px] border-l-[1px] border-gray-600">
                     {props.children}

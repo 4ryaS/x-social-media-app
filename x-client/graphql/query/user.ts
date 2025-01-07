@@ -36,6 +36,7 @@ export const get_current_user_query = graphql(`#graphql
                 id
                 content
                 author {
+                    id
                     first_name
                     last_name
                     profile_img_url
@@ -67,7 +68,9 @@ export const get_user_by_id_query = graphql(`#graphql
             posts {
                 id
                 content
+                image_url
                 author {
+                    id
                     first_name
                     last_name
                     profile_img_url
