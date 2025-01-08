@@ -44,7 +44,6 @@ const queries = {
 
 const mutations = {
     create_post: async (parent: any, { payload }: { payload: CreatePostData }, ctx: GraphQLContext) => {
-
         if (!ctx.user) {
             throw new Error("You are not authenticated!");
         }
@@ -52,6 +51,13 @@ const mutations = {
             ...payload,
             user_id: ctx.user.id
         });
+        return post;
+    },
+    delete_post: async (parent: any, { post_id }: { post_id: string }, ctx: GraphQLContext) => {
+        if (!ctx.user) {
+            throw new Error("You are not authenticated!");
+        }
+        const post = await PostService.delete_post(post_id);
         return post;
     },
 };

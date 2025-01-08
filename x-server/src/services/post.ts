@@ -21,7 +21,18 @@ class PostService {
         // await redis_client.setex(`RATE_LIMIT:POST:${data.user_id}`, 10, 1);
         await redis_client.del(`ALL_POSTS`);
         return post;
-    }
+    };
+
+    public static async delete_post(post_id: string) {
+        // const rate_limit_flag = await redis_client.get(`RATE_LIMIT:POST:${data.user_id}`);
+        // if (rate_limit_flag) throw new Error("Please Wait...");
+        const post = prisma_client.post.delete({
+            where: { id: post_id }
+        });
+        // await redis_client.setex(`RATE_LIMIT:POST:${data.user_id}`, 10, 1);
+        await redis_client.del(`ALL_POSTS`);
+        return post;
+    };
 
     public static async get_all_posts() {
         const cached_posts = await redis_client.get(`ALL_POSTS`);
@@ -30,7 +41,7 @@ class PostService {
         const posts = await prisma_client.post.findMany({ orderBy: { created_at: "desc" } });
         await redis_client.set(`ALL_POSTS`, JSON.stringify(posts));
         return posts;
-    }
+    };
 }
 
 export default PostService;
