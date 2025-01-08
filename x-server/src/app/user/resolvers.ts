@@ -74,7 +74,7 @@ const user_resolvers = {
             await redis_client.set(`RECOMMENDED_USERS:${ctx.user.id}`, JSON.stringify(recommeded_users));
             return recommeded_users;
         }
-    }
+    },
 };
 
 const mutations = {
@@ -88,6 +88,16 @@ const mutations = {
         if (!ctx.user || !ctx.user.id) throw new Error("Unauthenticated!");
         await UserService.unfollow_user(ctx.user.id, to);
         await redis_client.del(`RECOMMENDED_USERS:${ctx.user.id}`);
+        return true;
+    },
+    like_post: async (parent: any, { post_id }: { post_id: string }, ctx: GraphQLContext) => {
+        if (!ctx.user || !ctx.user.id) throw new Error("Unauthenticated!");
+        await UserService.like_post(ctx.user.id, post_id);
+        return true;
+    },
+    unlike_post: async (parent: any, { post_id }: { post_id: string }, ctx: GraphQLContext) => {
+        if (!ctx.user || !ctx.user.id) throw new Error("Unauthenticated!");
+        await UserService.unlike_post(ctx.user.id, post_id);
         return true;
     },
 };

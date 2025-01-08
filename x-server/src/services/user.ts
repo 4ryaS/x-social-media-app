@@ -76,6 +76,21 @@ class UserService {
             where: { follower_id_following_id: { follower_id: from, following_id: to } },
         });
     };
+
+    public static like_post(user_id: string, post_id: string) {
+        return prisma_client.likes.create({
+            data : {
+                user: { connect: { id: user_id } },
+                post: { connect: { id: post_id } },
+            },
+        });
+    };
+
+    public static unlike_post(user_id: string, post_id: string) {
+        return prisma_client.likes.delete({
+            where: { user_id_post_id: { user_id: user_id, post_id: post_id } },
+        });
+    };
 }
 
 export default UserService;

@@ -12,6 +12,14 @@ export const types = `#graphql
 
         recommend_users: [User]
 
+        likes: [Likes]
+        
         posts: [Post]
+    }
+
+    type Likes {
+        user: User!
+        post: Post!
+        like_time: String!
     }
 `;

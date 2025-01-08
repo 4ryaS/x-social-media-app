@@ -20,13 +20,15 @@ model User {
   email           String  @unique
   profile_img_url String? // optional
 
-  created_at DateTime @default(now())
-  updated_at DateTime @updatedAt
-
   followers Follows[] @relation("follower")
   following Follows[] @relation("following")
 
   posts Post[]
+
+  likes Likes[]
+
+  created_at DateTime @default(now())
+  updated_at DateTime @updatedAt
 }
 
 model Follows {
@@ -36,7 +38,10 @@ model Follows {
   following    User   @relation("following", fields: [following_id], references: [id])
   following_id String
 
-  @@id([follower_id, following_id])
+  @@id([follower_id, following_id]) // Composite primary key
+
+  follow_time   DateTime @default(now())  // Automatically set when the follow happens
+  
 }
 
 model Post {
@@ -47,6 +52,20 @@ model Post {
   author    User   @relation(fields: [author_id], references: [id])
   author_id String
 
+  likes Likes[]
+
   created_at DateTime @default(now())
   updated_at DateTime @updatedAt
+}
+
+model Likes {
+  user    User   @relation(fields: [user_id], references: [id])
+  user_id String
+
+  post    Post   @relation(fields: [post_id], references: [id])
+  post_id String
+
+  like_time   DateTime @default(now())  // Automatically set when the like happens
+
+  @@id([user_id, post_id]) // Composite primary key
 }

@@ -10,8 +10,15 @@ export const types = `#graphql
         content: String!
         image_url: String
 
+        likes: [Likes]
+
         author: User
-        
+    }
+
+    type Likes {
+        user: User!
+        post: Post!
+        like_time: String!
     }
 
     type Mutation {
