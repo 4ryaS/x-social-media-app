@@ -36,6 +36,13 @@ const user_resolvers = {
             const following = await prisma_client.follows.findMany({ where: { follower: { id: parent.id } }, include: { following: true } });
             return following.map((user) => user.following);
         },
+        likes: async (parent: User) => {
+            const likes = await prisma_client.likes.findMany({
+                where: { user_id: parent.id },
+                include: { user: true, post: true },
+            });
+            return likes;
+        },
         recommend_users: async (parent: User, _: any, ctx: GraphQLContext) => {
             if (!ctx.user) return [];
 
@@ -92,13 +99,13 @@ const mutations = {
     },
     like_post: async (parent: any, { post_id }: { post_id: string }, ctx: GraphQLContext) => {
         if (!ctx.user || !ctx.user.id) throw new Error("Unauthenticated!");
-        await UserService.like_post(ctx.user.id, post_id);
-        return true;
+        const post = await UserService.like_post(ctx.user.id, post_id);
+        return post;
     },
     unlike_post: async (parent: any, { post_id }: { post_id: string }, ctx: GraphQLContext) => {
         if (!ctx.user || !ctx.user.id) throw new Error("Unauthenticated!");
-        await UserService.unlike_post(ctx.user.id, post_id);
-        return true;
+        const post = await UserService.unlike_post(ctx.user.id, post_id);
+        return post;
     },
 };
 

@@ -19,7 +19,9 @@ export const types = `#graphql
 
     type Likes {
         user: User!
+        user_id: String!
         post: Post!
+        post_id: String!
         like_time: String!
     }
 `;

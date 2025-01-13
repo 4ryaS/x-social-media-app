@@ -13,3 +13,17 @@ export const unfollow_user_mutation = graphql(`
         unfollow_user(to: $to)
     }
 `);
+
+export const like_post_mutation = graphql(`
+    #graphql
+    mutation like_post($post_id: ID!) {
+        like_post(post_id: $post_id)
+    }
+`);
+
+export const unlike_post_mutation = graphql(`
+    #graphql
+    mutation unlike_post($post_id: ID!) {
+        unlike_post(post_id: $post_id)
+    }
+`);

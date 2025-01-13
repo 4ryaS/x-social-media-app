@@ -67,7 +67,14 @@ const author_resolvers = {
         author: async (parent: Post) => {
             const author = await UserService.get_user_by_id(parent.author_id);
             return author;
-        }
+        },
+        likes: async (parent: Post) => {
+            const likes = await prisma_client.likes.findMany({
+                where: { post_id: parent.id },
+                include: { post: true, user: true },
+            });
+            return likes;
+        },
     }
 };
 

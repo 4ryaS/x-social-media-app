@@ -77,19 +77,31 @@ class UserService {
         });
     };
 
-    public static like_post(user_id: string, post_id: string) {
-        return prisma_client.likes.create({
+    public static async like_post(user_id: string, post_id: string) {
+        await prisma_client.likes.create({
             data : {
                 user: { connect: { id: user_id } },
                 post: { connect: { id: post_id } },
             },
+            include: { post: true },
         });
+        return true;
     };
 
-    public static unlike_post(user_id: string, post_id: string) {
-        return prisma_client.likes.delete({
+    public static async unlike_post(user_id: string, post_id: string) {
+        await prisma_client.likes.delete({
             where: { user_id_post_id: { user_id: user_id, post_id: post_id } },
+            include: { post: true },
         });
+        return true;
+    };
+
+    public static async get_all_likes(post_id: string) {
+        const likes = await prisma_client.likes.findMany({
+            where: { post_id },
+            include: { user: true },
+        });
+        return likes;
     };
 }
 

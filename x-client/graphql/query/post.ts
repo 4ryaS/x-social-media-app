@@ -2,7 +2,7 @@ import { graphql } from "@/gql";
 
 export const get_all_posts_query = graphql(`
     #graphql
-    query GetAllTweets {
+    query GetAllPosts {
         get_all_posts {
             id
             content
@@ -12,6 +12,10 @@ export const get_all_posts_query = graphql(`
                 first_name
                 last_name
                 profile_img_url
+            }
+            likes {
+                user_id
+                post_id
             }
         }
     }
