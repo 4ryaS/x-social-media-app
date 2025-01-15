@@ -16,29 +16,33 @@ const FeedCard: React.FC<FeedCardProps> = (props) => {
     const [liked, set_liked] = useState<boolean>();
     const { mutate: like_post } = useLikePost();
     const { mutate: unlike_post } = useUnlikePost();
+    const [likes_count, set_likes_count] = useState(data.likes? data.likes.length: 0);
 
     useEffect(() => {
         if (user) {
             // Check if the user has liked the post
             // console.log(data.likes);    
             const user_has_liked = data.likes?.some(like => like?.user_id === user.id && like.post_id === data.id);
-            console.log(user_has_liked);
-            console.log(user.id);
+            // console.log(user_has_liked);
+            // console.log(user.id);
             set_liked(user_has_liked);
         }
     }, [user, data.likes, data.id]);
+
 
     const handle_like = useCallback(() => {
         if (!user) return;
         if (liked) {
             unlike_post(data.id);
             set_liked(false);
+            set_likes_count(likes_count - 1);
         }
         else {
             like_post(data.id)
             set_liked(true);
+            set_likes_count(likes_count + 1);
         }
-    }, [user, liked, like_post, data.id, unlike_post]);
+    }, [user, liked, unlike_post, data.id, likes_count, like_post]);
 
     return (
         <div className="border border-r-0 border-l-0 border-b-0 border-gray-600 p-5 hover:bg-slate-900 transition-all cursor-pointer">
@@ -62,7 +66,7 @@ const FeedCard: React.FC<FeedCardProps> = (props) => {
                             <BiRepost />
                         </div>
                         <div>
-                            <div>
+                            <div style={{ display: 'flex', alignItems: 'center' }}>
                                 {/* Conditionally render the appropriate icon based on the 'liked' state */}
                                 {liked ? (
                                     <AiFillHeart
@@ -70,17 +74,25 @@ const FeedCard: React.FC<FeedCardProps> = (props) => {
                                         style={{
                                             cursor: 'pointer',
                                             color: 'red', // Red when liked
-                                            transition: 'color 0.4s ease'
+                                            transition: 'color 0.4s ease',
+                                            marginRight: '8px', // Space between the heart icon and the like count
                                         }}
                                     />
                                 ) : (
                                     <AiOutlineHeart
                                         onClick={handle_like}
+                                        style={{
+                                            cursor: 'pointer',
+                                            marginRight: '8px', // Space between the heart icon and the like count
+                                        }}
                                     />
                                 )}
+                                <p className="text-sm" style={{ margin: 0 }}>
+                                    {likes_count}
+                                </p>
                             </div>
-
                         </div>
+
                         <div>
                             <BiUpload />
                         </div>

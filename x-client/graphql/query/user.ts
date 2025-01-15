@@ -41,6 +41,10 @@ export const get_current_user_query = graphql(`#graphql
                     last_name
                     profile_img_url
                 }
+                likes {
+                    user_id
+                    post_id
+                }
             }
         }
     }
@@ -74,6 +78,10 @@ export const get_user_by_id_query = graphql(`#graphql
                     first_name
                     last_name
                     profile_img_url
+                }
+                likes {
+                    user_id
+                    post_id
                 }
             }
         }
