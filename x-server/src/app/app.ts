@@ -5,6 +5,7 @@ import cors from "cors";
 
 import { User } from "./user";
 import { Post } from "./post";
+import { Repost } from "./repost";
 import { GraphQLContext } from "../interfaces";
 import JWTService from "../services/jwt";
 
@@ -25,28 +26,35 @@ export async function init_server() {
         typeDefs: `
             ${User.types}
             ${Post.types}
+            ${Repost.types}
 
             type Query {
                 ${User.queries}
                 ${Post.queries}
+                ${Repost.queries}
+
             }
 
             type Mutation {
-                ${Post.mutations}
                 ${User.mutations}
+                ${Post.mutations}
+                ${Repost.mutations}
             }
         `,
         resolvers: {
             Query: {
                 ...User.resolvers.queries,
-                ...Post.resolvers.queries
+                ...Post.resolvers.queries,
+                ...Repost.resolvers.queries
             },
             Mutation: {
+                ...User.resolvers.mutations,
                 ...Post.resolvers.mutations,
-                ...User.resolvers.mutations
+                ...Repost.resolvers.mutations
             },
-            ...Post.resolvers.author_resolvers,
             ...User.resolvers.user_resolvers,
+            ...Post.resolvers.post_resolvers,
+            ...Repost.resolvers.repost_resolvers
         },
     });
 

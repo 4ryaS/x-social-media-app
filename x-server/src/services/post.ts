@@ -42,6 +42,11 @@ class PostService {
         await redis_client.set(`ALL_POSTS`, JSON.stringify(posts));
         return posts;
     };
+
+    public static async get_post_by_id(post_id: string) {
+        const post = await prisma_client.post.findUnique({ where: { id: post_id } });
+        return post;
+    };
 }
 
 export default PostService;

@@ -23,7 +23,8 @@ model User {
   followers Follows[] @relation("follower")
   following Follows[] @relation("following")
 
-  posts Post[]
+  posts   Post[]
+  reposts Repost[] @relation("Reposter")
 
   likes Likes[]
 
@@ -38,10 +39,9 @@ model Follows {
   following    User   @relation("following", fields: [following_id], references: [id])
   following_id String
 
-  @@id([follower_id, following_id]) // Composite primary key
+  follow_time DateTime @default(now()) // Automatically set when the follow happens
 
-  follow_time   DateTime @default(now())  // Automatically set when the follow happens
-  
+  @@id([follower_id, following_id]) // Composite primary key
 }
 
 model Post {
@@ -52,7 +52,8 @@ model Post {
   author    User   @relation(fields: [author_id], references: [id])
   author_id String
 
-  likes Likes[]
+  likes   Likes[]
+  reposts Repost[] @relation("OriginalPost")
 
   created_at DateTime @default(now())
   updated_at DateTime @updatedAt
@@ -65,7 +66,20 @@ model Likes {
   post    Post   @relation(fields: [post_id], references: [id])
   post_id String
 
-  like_time   DateTime @default(now())  // Automatically set when the like happens
+  like_time DateTime @default(now()) // Automatically set when the like happens
 
   @@id([user_id, post_id]) // Composite primary key
+}
+
+model Repost {
+  id        String @id @default(cuid())
+  post      Post   @relation("OriginalPost", fields: [post_id], references: [id])
+  post_id   String
+  author    User   @relation("Reposter", fields: [author_id], references: [id])
+  author_id String
+
+  created_at DateTime @default(now())
+
+  // Ensure that a user can only repost the same post once (optional constraint)
+  @@unique([post_id, author_id]) // Composite unique constraint to avoid duplicate reposts
 }

@@ -15,9 +15,13 @@ const s3_client = new S3Client({
 });
 
 const queries = {
-    get_all_posts: () => {
-        const posts = PostService.get_all_posts();
+    get_all_posts: async () => {
+        const posts = await PostService.get_all_posts();
         return posts;
+    },
+    get_post_by_id: async (parent: any, { post_id }: { post_id: string }) => {
+        const post = await PostService.get_post_by_id(post_id);
+        return post;
     },
     get_signed_url_for_post: async (parent: any, { image_name, image_type }: { image_name: string, image_type: string }, ctx: GraphQLContext) => {
         if (!ctx.user || !ctx.user.id || !ctx.user.email) {
@@ -62,7 +66,7 @@ const mutations = {
     },
 };
 
-const author_resolvers = {
+const post_resolvers = {
     Post: {
         author: async (parent: Post) => {
             const author = await UserService.get_user_by_id(parent.author_id);
@@ -75,7 +79,12 @@ const author_resolvers = {
             });
             return likes;
         },
+        reposts: async (parent: Post) => {
+            // Fetch reposts for the post
+            const reposts = await prisma_client.repost.findMany({ where: { post_id: parent.id } });
+            return reposts;
+        }
     }
 };
 
-export const resolvers = { mutations, author_resolvers, queries };
+export const resolvers = { queries, mutations, post_resolvers };
