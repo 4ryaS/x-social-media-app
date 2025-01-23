@@ -1,5 +1,4 @@
 import { Post } from "@prisma/client";
-import { prisma_client } from "../../clients/db";
 import { GraphQLContext } from "../../interfaces";
 import { S3Client, PutObjectCommand } from "@aws-sdk/client-s3";
 import { getSignedUrl } from "@aws-sdk/s3-request-presigner";
@@ -73,15 +72,12 @@ const post_resolvers = {
             return author;
         },
         likes: async (parent: Post) => {
-            const likes = await prisma_client.likes.findMany({
-                where: { post_id: parent.id },
-                include: { post: true, user: true },
-            });
+            const likes = await PostService.get_post_likes(parent.id);
             return likes;
         },
         reposts: async (parent: Post) => {
             // Fetch reposts for the post
-            const reposts = await prisma_client.repost.findMany({ where: { post_id: parent.id } });
+            const reposts = await PostService.get_post_reposts(parent.id);
             return reposts;
         }
     }

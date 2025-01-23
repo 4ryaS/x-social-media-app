@@ -2,7 +2,6 @@ import { Repost } from "@prisma/client";
 import { GraphQLContext } from "../../interfaces";
 import RepostService from "../../services/repost";
 import UserService from "../../services/user";
-import { prisma_client } from "../../clients/db";
 import PostService from "../../services/post";
 
 

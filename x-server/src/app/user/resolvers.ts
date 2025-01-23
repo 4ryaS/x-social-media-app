@@ -1,4 +1,3 @@
-import { prisma_client } from "../../clients/db";
 import { GraphQLContext } from "../../interfaces";
 import { User } from "@prisma/client";
 import UserService from "../../services/user";
@@ -49,63 +48,32 @@ const mutations = {
 
 const user_resolvers = {
     User: {
-        posts: (parent: User) => {
-            const posts = prisma_client.post.findMany({ where: { author: { id: parent.id } } });
+        posts: async (parent: User) => {
+            const posts = await UserService.get_user_posts(parent.id);
             return posts;
         },
         followers: async (parent: User) => {
-            const followers = await prisma_client.follows.findMany({ where: { following: { id: parent.id } }, include: { follower: true } });
-            return followers.map((user) => user.follower);
+            const followers = await UserService.get_followers(parent.id);
+            return followers;
         },
         following: async (parent: User) => {
-            const following = await prisma_client.follows.findMany({ where: { follower: { id: parent.id } }, include: { following: true } });
-            return following.map((user) => user.following);
+            const following = await UserService.get_following(parent.id);
+            return following;
         },
         likes: async (parent: User) => {
-            const likes = await prisma_client.likes.findMany({
-                where: { user_id: parent.id },
-                include: { user: true, post: true },
-            });
+            const likes = await UserService.get_user_likes(parent.id);
             return likes;
         },
         recommend_users: async (parent: User, _: any, ctx: GraphQLContext) => {
             if (!ctx.user) return [];
-
-            const cached_value = await redis_client.get(`RECOMMENDED_USERS:${ctx.user.id}`);
-
-            if (cached_value) return JSON.parse(cached_value);
-
-            const recommeded_users: User[] = [];
-
-            const user_following = await prisma_client.follows.findMany({
-                where: {
-                    follower: { id: ctx.user?.id },
-                },
-                include: {
-                    following: {
-                        include: {
-                            followers: {
-                                include: {
-                                    following:
-                                        true
-                                }
-                            }
-                        }
-                    },
-                }
-            });
-
-            for (const followings of user_following) {
-                for (const followings_of_followed_user of followings.following.followers) {
-                    if (followings_of_followed_user.following_id !== ctx.user.id && user_following.findIndex(some_user => some_user.following_id === followings_of_followed_user.following_id) < 0) {
-                        recommeded_users.push(followings_of_followed_user.following);
-                    }
-                }
-            }
-
-            await redis_client.set(`RECOMMENDED_USERS:${ctx.user.id}`, JSON.stringify(recommeded_users));
+            const recommeded_users = UserService.get_recommended_users(ctx.user.id);
             return recommeded_users;
-        }
+           
+        },
+        reposts: async (parent: User) => {
+            const reposts = await UserService.get_user_reposts(parent.id);
+            return reposts;
+        },
     },
 };
 

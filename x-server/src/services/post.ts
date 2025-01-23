@@ -47,6 +47,19 @@ class PostService {
         const post = await prisma_client.post.findUnique({ where: { id: post_id } });
         return post;
     };
+
+    public static async get_post_likes(post_id: string) {
+        const likes = prisma_client.likes.findMany({
+            where: { post_id: post_id },
+            include: { post: true, user: true },
+        });
+        return likes;
+    };
+
+    public static async get_post_reposts(post_id: string) {
+        const reposts = await prisma_client.repost.findMany({ where: { post_id: post_id } });
+        return reposts;
+    }
 }
 
 export default PostService;

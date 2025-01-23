@@ -15,6 +15,8 @@ export const types = `#graphql
         likes: [Likes]
         
         posts: [Post]
+
+        reposts: [Repost]
     }
 
     type Likes {

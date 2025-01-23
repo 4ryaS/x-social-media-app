@@ -28,7 +28,7 @@ A modern social media platform built with a focus on performance, scalability, a
 ## Features
 
 - **User Authentication**: Users can log in using their Google account via OAuth.
-- **User Interaction**: Users can post content, follow other users, and engage with the community.
+- **User Interaction**: Users can post content, like posts, repost posts, follow other users and engage with the community.
 - **Media Upload**: Users can upload media to enrich their posts.
 - **Post Caching**: Fast content retrieval through Redis caching to improve user experience.
   

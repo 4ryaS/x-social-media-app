@@ -1,6 +1,8 @@
 import axios from "axios";
 import { prisma_client } from "../clients/db";
 import JWTService from "./jwt";
+import { redis_client } from "../clients/redis";
+import { User } from "@prisma/client";
 
 interface GoogleTokenResult {
     iss?: string;
@@ -64,7 +66,7 @@ class UserService {
 
     public static follow_user(from: string, to: string) {
         return prisma_client.follows.create({
-            data : {
+            data: {
                 follower: { connect: { id: from } },
                 following: { connect: { id: to } },
             },
@@ -79,7 +81,7 @@ class UserService {
 
     public static async like_post(user_id: string, post_id: string) {
         await prisma_client.likes.create({
-            data : {
+            data: {
                 user: { connect: { id: user_id } },
                 post: { connect: { id: post_id } },
             },
@@ -103,6 +105,72 @@ class UserService {
         });
         return likes;
     };
-}
+
+    public static async get_followers(user_id: string) {
+        const followers = await prisma_client.follows.findMany({ where: { following: { id: user_id } }, include: { follower: true } });
+        return followers.map((user) => user.follower)
+    };
+
+    public static async get_following(user_id: string) {
+        const following = await prisma_client.follows.findMany({ where: { follower: { id: user_id } }, include: { following: true } });
+        return following.map((user) => user.following);
+    };
+
+    public static async get_recommended_users(user_id: string) {
+        const cached_value = await redis_client.get(`RECOMMENDED_USERS:${user_id}`);
+        if (cached_value) return JSON.parse(cached_value);
+
+        const recommeded_users: User[] = [];
+
+        const user_following = await prisma_client.follows.findMany({
+            where: {
+                follower: { id: user_id },
+            },
+            include: {
+                following: {
+                    include: {
+                        followers: {
+                            include: {
+                                following:
+                                    true
+                            }
+                        }
+                    }
+                },
+            }
+        });
+
+        for (const followings of user_following) {
+            for (const followings_of_followed_user of followings.following.followers) {
+                if (followings_of_followed_user.following_id !== user_id && user_following.findIndex(some_user => some_user.following_id === followings_of_followed_user.following_id) < 0) {
+                    recommeded_users.push(followings_of_followed_user.following);
+                }
+            }
+        }
+
+        await redis_client.set(`RECOMMENDED_USERS:${user_id}`, JSON.stringify(recommeded_users));
+        return recommeded_users;
+    };
+
+    public static async get_user_posts(user_id: string) {
+        const posts = prisma_client.post.findMany({ where: { author: { id: user_id } } });
+        return posts;
+    };
+
+    public static async get_user_likes(user_id: string) {
+        const likes = await prisma_client.likes.findMany({
+            where: { user_id: user_id },
+            include: { user: true, post: true },
+        });
+        return likes;
+    };
+
+    public static async get_user_reposts(user_id: string) {
+        const reposts = await prisma_client.repost.findMany({
+            where: { author_id: user_id },
+        });
+        return reposts;
+    }
+};
 
 export default UserService;
