@@ -17,6 +17,14 @@ export const get_all_posts_query = graphql(`
                 user_id
                 post_id
             }
+            reposts {
+                author {
+                    id
+                }
+                post {
+                    id
+                }
+            }
         }
     }
 `);

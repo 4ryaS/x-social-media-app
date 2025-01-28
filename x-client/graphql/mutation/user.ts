@@ -27,3 +27,21 @@ export const unlike_post_mutation = graphql(`
         unlike_post(post_id: $post_id)
     }
 `);
+
+export const repost_post_mutation = graphql(`
+    #graphql
+    mutation repost_post($post_id: String!) {
+        repost_post(post_id: $post_id) {
+            id
+        }
+    }
+`);
+
+export const delete_repost_mutation = graphql(`
+    #graphql
+    mutation delete_repost($post_id: String!) {
+        delete_repost(post_id: $post_id) {
+            id
+        }
+    }
+`);

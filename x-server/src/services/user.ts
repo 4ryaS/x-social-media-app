@@ -170,7 +170,7 @@ class UserService {
             where: { author_id: user_id },
         });
         return reposts;
-    }
+    };
 };
 
 export default UserService;
