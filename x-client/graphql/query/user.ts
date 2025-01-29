@@ -83,6 +83,14 @@ export const get_user_by_id_query = graphql(`#graphql
                     user_id
                     post_id
                 }
+                reposts {
+                    author {
+                        id
+                    }
+                    post {
+                        id
+                    }
+                }
             }
         }
     }

@@ -88,7 +88,7 @@ const FeedCard: React.FC<FeedCardProps> = (props) => {
                             {reposted ? (<BiRepost onClick={handle_repost}
                                 style={{
                                     cursor: "pointer",
-                                    color: "cyan",
+                                    color: "#11fa88",
                                     transition: "color 0.3s ease",
                                 }}
                             />) : (<BiRepost onClick={handle_repost}
